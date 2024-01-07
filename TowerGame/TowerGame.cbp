@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="TowerGame" />
+		<Option makefile="makefile" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/TowerGame" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-std=c++11" />
+					<Add directory="allegro/include" />
+				</Compiler>
+				<Linker>
+					<Add library="allegro/lib/liballegro_monolith-debug.dll.a" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/TowerGame" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++11" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="allegro/lib/liballegro_monolith.dll.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="../allegro/include" />
+		</Compiler>
+		<Unit filename="../algif5/src/algif.cpp" />
+		<Unit filename="../algif5/src/algif.h" />
+		<Unit filename="../algif5/src/bitmap.cpp" />
+		<Unit filename="../algif5/src/gif.cpp" />
+		<Unit filename="../algif5/src/lzw.cpp" />
+		<Unit filename="Main.cpp" />
+		<Unit filename="about.cpp" />
+		<Unit filename="about.h" />
+		<Unit filename="game.cpp" />
+		<Unit filename="game.h" />
+		<Unit filename="global.cpp" />
+		<Unit filename="global.h" />
+		<Unit filename="menu.cpp" />
+		<Unit filename="menu.h" />
+		<Unit filename="resource.cpp" />
+		<Unit filename="resource.h" />
+		<Unit filename="result.cpp" />
+		<Unit filename="result.h" />
+		<Unit filename="scene.cpp" />
+		<Unit filename="scene.h" />
+		<Unit filename="setting.cpp" />
+		<Unit filename="setting.h" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

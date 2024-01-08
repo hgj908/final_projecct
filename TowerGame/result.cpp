@@ -1,7 +1,7 @@
 #include "result.h"
 #include "resource.h"
 #include "game.h"
-
+int Max(int _,int __){return _<__?__:_ ;}
 int re_button_index = 0;
 void RESULT::State_init() {}
 
@@ -19,15 +19,15 @@ int RESULT::State_process(ALLEGRO_EVENT event) {
                 re_button_index--;
             }
         }
-        if (event.keyboard.keycode == ALLEGRO_KEY_ENTER && re_button_index == 0) {
+        if ((event.keyboard.keycode == ALLEGRO_KEY_ENTER || event.keyboard.keycode == ALLEGRO_KEY_E )&& re_button_index == 0) {
             al_play_sample_instance(click_se_spi);
             al_stop_sample_instance(dead_sound_spi);
             return MSG_GAME_RESTART;
-        } else if (event.keyboard.keycode == ALLEGRO_KEY_ENTER && re_button_index == 1) {
+        } else if ((event.keyboard.keycode == ALLEGRO_KEY_ENTER || event.keyboard.keycode == ALLEGRO_KEY_E )&& re_button_index == 1) {
             al_play_sample_instance(click_se_spi);
             al_stop_sample_instance(dead_sound_spi);
             return MSG_TERMINATE;
-        }else if (event.keyboard.keycode == ALLEGRO_KEY_ENTER && re_button_index == 2) {
+        }else if ((event.keyboard.keycode == ALLEGRO_KEY_ENTER || event.keyboard.keycode == ALLEGRO_KEY_E )&& re_button_index == 2) {
             al_play_sample_instance(click_se_spi);
             al_stop_sample_instance(dead_sound_spi);
             return MSG_BACK_TO_MENU;
@@ -51,4 +51,6 @@ void RESULT::Scene_draw() {
         al_draw_scaled_bitmap(remenu_button, 0, 0, 1563, 1980, 0, 0, 760, 950, 0);
     }
     al_draw_textf(result_score, al_map_rgb(255,255,255), 350,250, ALLEGRO_ALIGN_CENTER,  "%3d",number);
+    maxx=Max(number,maxx);
+
 }

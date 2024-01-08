@@ -18,3 +18,4 @@ bool easter_egg_mode = false;
 
 int board[8][8];
 int number = 0; // use as score
+int maxx=0;

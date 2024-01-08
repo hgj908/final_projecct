@@ -30,19 +30,19 @@ int SETTING::State_process(ALLEGRO_EVENT event) {
         if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
             al_play_sample_instance(click_se_spi);
             return MSG_BACK_TO_MENU;
-        } else if (event.keyboard.keycode == key_down && selected < 1) {
+        } else if (event.keyboard.keycode == key_down || event.keyboard.keycode == ALLEGRO_KEY_S && selected < 1) {
             ++selected;
-        } else if (event.keyboard.keycode == key_up && selected > 0) {
+        } else if (event.keyboard.keycode == key_up || event.keyboard.keycode == ALLEGRO_KEY_W && selected > 0) {
             --selected;
-        } else if (event.keyboard.keycode == key_left) {
+        } else if (event.keyboard.keycode == key_left  || event.keyboard.keycode == ALLEGRO_KEY_A) {
             key_left_pressed = true;
-        } else if (event.keyboard.keycode == key_right) {
+        } else if (event.keyboard.keycode == key_right || event.keyboard.keycode == ALLEGRO_KEY_D) {
             key_right_pressed = true;
         }
     } else if (event.type == ALLEGRO_EVENT_KEY_UP) {
-        if (event.keyboard.keycode == key_left) {
+        if (event.keyboard.keycode == key_left || event.keyboard.keycode == ALLEGRO_KEY_A ) {
             key_left_pressed = false;
-        } else if (event.keyboard.keycode == key_right) {
+        } else if (event.keyboard.keycode == key_right || event.keyboard.keycode == ALLEGRO_KEY_D) {
             key_right_pressed = false;
         }
     }

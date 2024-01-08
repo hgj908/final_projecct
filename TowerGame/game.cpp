@@ -7,13 +7,15 @@ double game_begin_time;
 float die_count_begin;
 int gif_count = 0;
 // by player
-int generator_speed = 180;//ç”Ÿæˆé€Ÿåº¦ï¼Œ180æ¥¨åˆ·æ–°ä¸€æ³¢
+int generator_speed = 180;//¥Í¦¨³t«×¡A180·©¨ê·s¤@ªi
 int counter;
 int queens_num;
 const float unit = 86;
 const float dx = 33;
 const float dy = 241;
-void game_init(Player &cha) {
+
+
+void GAME::State_init(Player &cha) {
     // by art
     j_idle_begin_time = al_get_time();
     game_begin_time = al_get_time();
@@ -29,7 +31,7 @@ void game_init(Player &cha) {
 }
 
 void game_destroy() {}
-void queens_process(int n) {
+void Queen::object_process(int n) {
     int x, y, num;
     for(int i=0; i<n; i++){
         num = rand() % 64;
@@ -45,18 +47,18 @@ void queens_process(int n) {
                     board[row][col]++;
                 }
             }
-        }//åªè¦æœ‰æ”»æ“Šåˆ°å°±+1
-        board[y][x]=100;//randä¹‹å¾ŒæŠŠæœ‰çš‡åçš„é»çš„å€¼æ”¹ç‚º30
+        }//¥u­n¦³§ğÀ»¨ì´N+1
+        board[y][x]=100;//rand¤§«á§â¦³¬Ó¦ZªºÂIªº­È§ï¬°30
     }
 }
 
-void candy_process(){
+void Candy::object_process1(){
     int candy=rand()%64;
     if(board[candy%8][candy/8]==0)
         board[candy%8][candy/8]=-100;
 }
 
-int game_process(ALLEGRO_EVENT event,Player &player) {
+int GAME::State_process(ALLEGRO_EVENT event,Player &player) {
     Queen q;
     if (player.player_die()==1) {
         if (al_get_time() - die_count_begin >= 2) {
@@ -64,12 +66,12 @@ int game_process(ALLEGRO_EVENT event,Player &player) {
         }
         return MSG_NOPE;
     }
-    // æ¸¬è©¦è¡€é‡é¡¯ç¤º
-    /*if (event.type == ALLEGRO_KEY_DOWN &&
-        event.keyboard.keycode == ALLEGRO_KEY_W &&
+    // ´ú¸Õ¦å¶qÅã¥Ü
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN &&
+        event.keyboard.keycode == ALLEGRO_KEY_Q &&
         player.HP_val() > 0) {
         player.HP_eval(player.HP_val()-1);
-    }*/
+    }
     player.player_getcandy();
     // player idle
     if (event.type == ALLEGRO_EVENT_KEY_DOWN && player.state_val() == PLAYER_IDLE) {
@@ -82,7 +84,7 @@ int game_process(ALLEGRO_EVENT event,Player &player) {
             player.x_eval(player.x_val()+1);
         } else if ((event.keyboard.keycode == key_up || event.keyboard.keycode == ALLEGRO_KEY_W ) && player.y_val() > 0) {
            player.y_eval(player.y_val()-1);
-            printf("??");
+            //printf("??");
         } else if ((event.keyboard.keycode == key_down || event.keyboard.keycode == ALLEGRO_KEY_S ) && player.y_val() < 7) {
             player.y_eval(player.y_val()+1);
         }
@@ -96,26 +98,27 @@ int game_process(ALLEGRO_EVENT event,Player &player) {
         gif_count++;
         counter--;
         if (counter == 150) {
-            //ç”Ÿæˆçš‡å
-            //è®Šæ•¸å¯ä»¥èª¿æ•´ï¼Œè¦éš¨è‘—æ™‚é–“èª¿æ•´ä¹Ÿè¡Œ
+            //¥Í¦¨¬Ó¦Z
+            //ÅÜ¼Æ¥i¥H½Õ¾ã¡A­nÀHµÛ®É¶¡½Õ¾ã¤]¦æ
             q.object_process(1 + queens_num / 8);
             //candy
             //if(number%5==0)
-            candy_process();
+            Candy c;
+            c.object_process1();
         } else if (counter == 20) {
             al_stop_sample_instance(lightning_spi);
             al_play_sample_instance(lightning_spi);
         } else if (counter == 0) {
-            //åˆ¤æ–·æ‰£è¡€
+            //§PÂ_¦©¦å
             player.player_hurt();
             if (player.player_go_die()==1) {
                 die_count_begin = al_get_time();
                 al_play_sample_instance(dead_sound_spi);
             }
-            //æ¸…ç©ºçš‡å
+            //²MªÅ¬Ó¦Z
             q.object_clear();
             queens_num++;
-            counter = generator_speed; //counteré‡è£½
+            counter = generator_speed; //counter­«»s
         }
     }
 
@@ -147,8 +150,10 @@ void score_draw(Player &player) {
     }
 
     al_draw_textf(score, al_map_rgb(255,255,255), 400, 55, ALLEGRO_ALIGN_LEFT,  "Score: %3d", number);
+    al_draw_textf(score, al_map_rgb(255,255,255), 270, 140, ALLEGRO_ALIGN_LEFT,  "MaxScore: %3d", maxx);
 }
-void queen_draw(){
+
+void Queen::object_draw(){
     for (int i=0; i<8; ++i) {
         for (int j=0; j<8; ++j) {
             if(board[i][j] >=1 && board[i][j] < 20) {
@@ -212,7 +217,7 @@ void queen_draw(){
     }
 
 }
-void candy_draw(){
+void Candy::object_draw(){
     for (int i=0; i<8; ++i) {
         for (int j=0; j<8; ++j) {
                 if (board[i][j] < 0) {
@@ -270,11 +275,12 @@ void player_draw(Player &player){
 void background_draw(){
     al_draw_bitmap(GBI, 0, 0, 0);
 }
-void game_draw(Player &player) {
+void GAME::scene_draw(Player &player) {
     Queen q;
+    Candy c;
     background_draw();
     q.object_draw();
-    candy_draw();
+    c.object_draw();
     player_draw(player);
     score_draw(player);
     heart_draw(player);

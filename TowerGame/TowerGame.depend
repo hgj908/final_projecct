@@ -2630,7 +2630,7 @@
 1702049046 source:c:\users\hguan\desktop\final_project_ori\algif5\src\lzw.cpp
 	"algif.h"
 
-1704696355 source:c:\users\hguan\desktop\final_project_ori\towergame\about.cpp
+1704703574 source:c:\users\hguan\desktop\final_project_ori\towergame\about.cpp
 	"about.h"
 	"resource.h"
 
@@ -2638,7 +2638,7 @@
 	"global.h"
 	"resource.h"
 
-1702184510 c:\users\hguan\desktop\final_project_ori\towergame\global.h
+1704706435 c:\users\hguan\desktop\final_project_ori\towergame\global.h
 	<bits/stdc++.h>
 	<allegro5/allegro.h>
 	<allegro5/allegro_audio.h>
@@ -2669,10 +2669,10 @@
 1704696119 c:\users\hguan\desktop\final_project_ori\towergame\resource.h
 	"global.h"
 
-1702184510 source:c:\users\hguan\desktop\final_project_ori\towergame\global.cpp
+1704706234 source:c:\users\hguan\desktop\final_project_ori\towergame\global.cpp
 	"global.h"
 
-1704697300 source:c:\users\hguan\desktop\final_project_ori\towergame\menu.cpp
+1704703330 source:c:\users\hguan\desktop\final_project_ori\towergame\menu.cpp
 	"menu.h"
 	"resource.h"
 
@@ -2683,20 +2683,20 @@
 1702471985 source:c:\users\hguan\desktop\final_project_ori\towergame\resource.cpp
 	"resource.h"
 
-1704696355 source:c:\users\hguan\desktop\final_project_ori\towergame\result.cpp
+1704706234 source:c:\users\hguan\desktop\final_project_ori\towergame\result.cpp
 	"result.h"
 	"resource.h"
 	"game.h"
 
-1704696355 c:\users\hguan\desktop\final_project_ori\towergame\result.h
+1704706234 c:\users\hguan\desktop\final_project_ori\towergame\result.h
 	"global.h"
 	"resource.h"
 
-1704639226 c:\users\hguan\desktop\final_project_ori\towergame\game.h
+1704705469 c:\users\hguan\desktop\final_project_ori\towergame\game.h
 	"global.h"
 	"player.h"
 
-1704695851 source:c:\users\hguan\desktop\final_project_ori\towergame\setting.cpp
+1704703330 source:c:\users\hguan\desktop\final_project_ori\towergame\setting.cpp
 	"setting.h"
 	"resource.h"
 
@@ -2705,20 +2705,20 @@
 	"resource.h"
 	"scene.h"
 
-1704692650 source:c:\users\hguan\desktop\final_project_ori\towergame\main.cpp
+1704704295 source:c:\users\hguan\desktop\final_project_ori\towergame\main.cpp
 	"global.h"
 	"scene.h"
 
-1704617917 c:\users\hguan\desktop\final_project_ori\towergame\scene.h
+1704704853 c:\users\hguan\desktop\final_project_ori\towergame\scene.h
 	"global.h"
 	"game.h"
 
-1704640025 source:c:\users\hguan\desktop\final_project_ori\towergame\game.cpp
+1704706234 source:c:\users\hguan\desktop\final_project_ori\towergame\game.cpp
 	"game.h"
 	"resource.h"
 	"player.h"
 
-1704697300 source:c:\users\hguan\desktop\final_project_ori\towergame\scene.cpp
+1704706234 source:c:\users\hguan\desktop\final_project_ori\towergame\scene.cpp
 	"scene.h"
 	"menu.h"
 	"game.h"

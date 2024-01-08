@@ -17,18 +17,30 @@ void background_draw();
 class object{
 public:
     virtual void object_process(int n);
-
+    virtual void object_process1();
     virtual void object_draw();
 };
 
 class Queen : public object{
 public:
-    virtual void object_process(int n) override{
-        queens_process(n);
-    }
+    virtual void object_process(int n) ;
+    virtual void object_process1()override{};
     void object_clear() ;
-    virtual void object_draw() override{
-        queen_draw();
-    }
+    virtual void object_draw() ;
 
 };
+class Candy : public object{
+public:
+    virtual void object_process1() ;
+    virtual void object_process(int n)override{};
+    virtual void object_draw() ;
+
+};
+class GAME{
+public:
+    void State_init(Player &);
+    void scene_draw(Player &);
+    int State_process(ALLEGRO_EVENT,Player &);
+
+};
+

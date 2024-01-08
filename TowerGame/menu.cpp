@@ -17,17 +17,17 @@ void menu_destroy() {}
 
 int MENU::State_process(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-        if(event.keyboard.keycode == ALLEGRO_KEY_DOWN){
+        if(event.keyboard.keycode == ALLEGRO_KEY_DOWN || event.keyboard.keycode == ALLEGRO_KEY_S ){
             if(button_index <= 2){
                 button_index++;
             }
         }
-        if(event.keyboard.keycode == ALLEGRO_KEY_UP){
+        if(event.keyboard.keycode == ALLEGRO_KEY_UP || event.keyboard.keycode == ALLEGRO_KEY_W ){
             if(button_index>0){
                 button_index--;
             }
         }
-        if (event.keyboard.keycode == ALLEGRO_KEY_ENTER) {
+        if (event.keyboard.keycode == ALLEGRO_KEY_ENTER || event.keyboard.keycode == ALLEGRO_KEY_E ) {
             al_play_sample_instance(click_se_spi);
             if (button_index == 0) {
                 return MSG_GAME_START;

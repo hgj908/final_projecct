@@ -8,7 +8,7 @@
 #include "player.h"
 int scene_state;
 
-void scene_init() {
+void Scene::scene_init() {
     al_init();
     // keyboard
     al_install_keyboard();
@@ -44,27 +44,11 @@ void scene_init() {
 // input(int msg)
 // function:
 // 1. menu_destroy
-// 2. virtural Ë¶Å override ÂØ¶‰Ωúinit
-// 3. ÊâæÂà∞ÈÇ£ÂÄãÂúñÁöÑÊüê‰∏ÄÂÄãÂ∫ßÊ®ôÔºåÂèØ‰ª•ËóâÁî±ÈÄôÂÄãÂ∫ßÊ®ôÔºåÂéªÊîæÁÆ≠È†≠
-// 4. virtural Ë¶Å override ÂØ¶‰ΩúÊì∫ÊîæÁÆ≠È†≠
+// 2. virtural ≠n override πÍß@init
+// 3. ß‰®Ï®∫≠”πœ™∫¨Y§@≠”Æyº–°A•i•H¬«•—≥o≠”Æyº–°A•h©ÒΩb¿Y
+// 4. virtural ≠n override πÍß@¬\©ÒΩb¿Y
 
-
-/*class GAME : public State{
-public:
-    virtual void State_init1(Player p) override{
-       game_init(p);
-    }
-
-    virtual void Scene_state() override {
-        scene_state = SCENE_GAME;
-    }
-    virtual void Scene_draw1(PLayer p) override{
-       game_draw(p);
-    }
-
-};*/
-
-void scene_begin() {
+void Scene::scene_begin() {
     scene_state = SCENE_MENU;
     MENU ori;
     ori.State_init();
@@ -72,14 +56,14 @@ void scene_begin() {
     al_play_sample_instance(eight_queens_bgm_spi);
 }
 
-void scene_destroy() {
+void Scene::scene_destroy() {
     al_destroy_event_queue(scene_queue);
     al_destroy_display(scene_display);
     al_destroy_timer(scene_timer);
     destroy_resource();
 }
 
-int scene_run() {
+int Scene::scene_run() {
     ALLEGRO_EVENT event;
     Player player;
 
@@ -100,7 +84,7 @@ int scene_run() {
 
 }
 
-int scene_process(ALLEGRO_EVENT event,Player &player) {
+int Scene::scene_process(ALLEGRO_EVENT event,Player &player) {
     int msg;
 
     if (scene_state == SCENE_MENU) {
@@ -108,17 +92,15 @@ int scene_process(ALLEGRO_EVENT event,Player &player) {
         msg = now_state.State_process(event);
         // printf("final\n");
         if (msg == MSG_GAME_START) {
+             GAME now_state;
              menu_destroy();
              scene_state = SCENE_GAME;
-             game_init(player);
+             now_state.State_init(player);
         } else if (msg == MSG_CHANGE_SETTING) {
             SETTING now_state;
-            //now_state.Scene_state(SCENE_SETTING);
             scene_state = SCENE_SETTING;
             now_state.State_init();
             // menu_destroy();
-            // scene_state = SCENE_SETTING;
-            // setting_init();
         } else if (msg == MSG_TERMINATE) {
             return MSG_TERMINATE;
         } else if (msg == MSG_ABOUT) {
@@ -127,11 +109,10 @@ int scene_process(ALLEGRO_EVENT event,Player &player) {
             scene_state = SCENE_ABOUT;
             now_state.State_init();
             // menu_destroy();
-            // scene_state = SCENE_ABOUT;
-            // about_init();
         }
     } else if (scene_state == SCENE_GAME) {
-        msg = game_process(event,player);
+        GAME now_state;
+        msg = now_state.State_process(event,player);
         if (msg == MSG_GAME_OVER) {
             RESULT next_state;
             game_destroy();
@@ -143,11 +124,13 @@ int scene_process(ALLEGRO_EVENT event,Player &player) {
         }
     } else if (scene_state == SCENE_RESULT) {
         RESULT now_state;
+
         msg = now_state.State_process(event);
         if (msg == MSG_GAME_RESTART) {
+            GAME now_state;
             result_destroy();
             scene_state = SCENE_GAME;
-            game_init(player);
+            now_state.State_init(player);
         } else if (msg == MSG_BACK_TO_MENU) {
             MENU next_state;
             result_destroy();
@@ -178,13 +161,14 @@ int scene_process(ALLEGRO_EVENT event,Player &player) {
     return MSG_NOPE;
 }
 
-void scene_draw( Player &player) {
+void Scene::scene_draw( Player &player) {
     //printf("%d\n",player.x_val());
     if (scene_state == SCENE_MENU) {
         MENU now_state;
         now_state.Scene_draw();
     } else if (scene_state == SCENE_GAME) {
-        game_draw( player);
+        GAME now_state;
+        now_state.scene_draw(player);
     } else if (scene_state == SCENE_RESULT) {
         RESULT now_state;
         now_state.Scene_draw();

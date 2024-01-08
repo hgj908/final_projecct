@@ -43,3 +43,4 @@ extern bool easter_egg_mode;
 
 extern int board[8][8];
 extern int number;
+extern int maxx;

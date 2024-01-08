@@ -7,7 +7,8 @@ void about_destroy() {}
 
 int ABOUT::State_process(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_KEY_DOWN &&
-        event.keyboard.keycode == ALLEGRO_KEY_ENTER) {
+        (event.keyboard.keycode == ALLEGRO_KEY_ENTER ||
+        event.keyboard.keycode == ALLEGRO_KEY_E)) {
         return MSG_BACK_TO_MENU;
     }
     return MSG_NOPE;

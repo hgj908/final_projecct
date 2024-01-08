@@ -2,13 +2,14 @@
 #include "scene.h"
 
 int main(int argc, char **argv){
-    scene_init();
-    scene_begin();
+    Scene s;
+    s.scene_init();
+    s.scene_begin();
     int msg;
 
-    while ((msg = scene_run()) != MSG_TERMINATE ) {
+    while ((msg = s.scene_run()) != MSG_TERMINATE ) {
         ;
     }
-    scene_destroy();
+    s.scene_destroy();
     return 0;
 }

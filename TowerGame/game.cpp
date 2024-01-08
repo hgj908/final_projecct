@@ -1,45 +1,34 @@
 #include "game.h"
 #include "resource.h"
-
-enum { PLAYER_IDLE, PLAYER_ROLL, PLAYER_DIE };
-enum { DIR_LEFT, DIR_RIGHT };
-
-
-
+#include "player.h"
 // by art
 double j_idle_begin_time;
 double game_begin_time;
 float die_count_begin;
 int gif_count = 0;
-
 // by player
 int generator_speed = 180;//生成速度，180楨刷新一波
 int counter;
 int queens_num;
-
+const float unit = 86;
+const float dx = 33;
+const float dy = 241;
 void game_init(Player &cha) {
     // by art
-
     j_idle_begin_time = al_get_time();
     game_begin_time = al_get_time();
-    cha.x_eval(0);
-    cha.y_eval(0);
-    cha.frame_eval(0);
-    cha.state_eval(PLAYER_IDLE);
-    cha.dir_eval(DIR_RIGHT);
-    cha.HP_eval(3);
-    // by player
-    //player.x = player.y = player.frame = 0;
-    //player.state = PLAYER_IDLE;
-    //player.dir = DIR_RIGHT;
-    //player.HP = 3;
-
+    cha.player_init();
+    //cha.x_eval(0);
+    //cha.y_eval(0);
+    //cha.frame_eval(0);
+    //cha.state_eval(PLAYER_IDLE);
+    //cha.dir_eval(DIR_RIGHT);
+    //cha.HP_eval(3);
     counter = generator_speed;
     queens_num = 1;
 }
 
 void game_destroy() {}
-
 void queens_process(int n) {
     int x, y, num;
     for(int i=0; i<n; i++){
@@ -68,73 +57,48 @@ void candy_process(){
 }
 
 int game_process(ALLEGRO_EVENT event,Player &player) {
-
-    if (player.state_val() == PLAYER_DIE) {
+    Queen q;
+    if (player.player_die()==1) {
         if (al_get_time() - die_count_begin >= 2) {
             return MSG_GAME_OVER;
         }
         return MSG_NOPE;
     }
-
     // 測試血量顯示
-    if (event.type == ALLEGRO_KEY_DOWN &&
+    /*if (event.type == ALLEGRO_KEY_DOWN &&
         event.keyboard.keycode == ALLEGRO_KEY_W &&
         player.HP_val() > 0) {
         player.HP_eval(player.HP_val()-1);
-    }
-
-    if(player.state_val() == PLAYER_IDLE && board[player.x_val()][player.y_val()] < 0) {
-        if (player.HP_val() < 3)
-            player.HP_eval(player.HP_val()+1);
-        board[player.x_val()][player.y_val()]= 0;
-        al_stop_sample_instance(get_candy_spi);
-        al_play_sample_instance(get_candy_spi);
-    }
-
+    }*/
+    player.player_getcandy();
     // player idle
     if (event.type == ALLEGRO_EVENT_KEY_DOWN && player.state_val() == PLAYER_IDLE) {
         player.ox_eval( player.x_val());
         player.oy_eval( player.y_val());
 
-        if (event.keyboard.keycode == key_left && player.x_val() > 0) {
+        if ((event.keyboard.keycode == key_left || event.keyboard.keycode == ALLEGRO_KEY_A )&& player.x_val() > 0) {
             player.x_eval(player.x_val()-1);
-        } else if (event.keyboard.keycode == key_right && player.x_val() < 7) {
+        } else if ((event.keyboard.keycode == key_right || event.keyboard.keycode == ALLEGRO_KEY_D ) && player.x_val() < 7) {
             player.x_eval(player.x_val()+1);
-        } else if (event.keyboard.keycode == key_up && player.y_val() > 0) {
+        } else if ((event.keyboard.keycode == key_up || event.keyboard.keycode == ALLEGRO_KEY_W ) && player.y_val() > 0) {
            player.y_eval(player.y_val()-1);
             printf("??");
-        } else if (event.keyboard.keycode == key_down && player.y_val() < 7) {
+        } else if ((event.keyboard.keycode == key_down || event.keyboard.keycode == ALLEGRO_KEY_S ) && player.y_val() < 7) {
             player.y_eval(player.y_val()+1);
         }
-
-        if (player.x_val() != player.ox_val() || player.y_val() != player.oy_val()) {
-            player.state_eval( PLAYER_ROLL);
-            player.frame_eval(0) ;
-            if (player.x_val() != player.ox_val()) {
-                player.dir_eval( ((player.x_val() < player.ox_val()) ? DIR_LEFT : DIR_RIGHT) );
-            }
-            al_stop_sample_instance(jump_spi);
-            al_play_sample_instance(jump_spi);
-        }
+        player.player_roll();
     }
 
     // only update frame count when the event is from the scene timer
     // don't update for keyboard event
     if (event.type == ALLEGRO_EVENT_TIMER && event.timer.source == scene_timer) {
-        player.frame_eval(player.frame_val()+1);
-        if (player.state_val() == PLAYER_ROLL && player.frame_val() >= 21) {
-            player.state_eval( PLAYER_IDLE);
-            player.frame_eval(0) ;
-
-        }
-
+        player.player_change_frame();
         gif_count++;
-
         counter--;
         if (counter == 150) {
             //生成皇后
             //變數可以調整，要隨著時間調整也行
-            queens_process(1 + queens_num / 8);
+            q.object_process(1 + queens_num / 8);
             //candy
             //if(number%5==0)
             candy_process();
@@ -143,28 +107,13 @@ int game_process(ALLEGRO_EVENT event,Player &player) {
             al_play_sample_instance(lightning_spi);
         } else if (counter == 0) {
             //判斷扣血
-            if (player.state_val() == PLAYER_IDLE && board[player.x_val()][player.y_val()] >= 1) {
-                 player.HP_eval(player.HP_val()-1);
-            } else if (player.state_val() == PLAYER_ROLL) {
-                if (player.frame_val() < 21 / 2 && board[player.ox_val()][player.oy_val()] >= 1) {
-                     player.HP_eval(player.HP_val()-1);
-                } else if (player.frame_val() >= 21 / 2 && board[player.x_val()][player.y_val()] >= 1) {
-                    player.HP_eval(player.HP_val()-1);
-                }
-            }
-
-            if (player.state_val() != PLAYER_DIE && player.HP_val() == 0) {
-                player.state_eval ( PLAYER_DIE);
+            player.player_hurt();
+            if (player.player_go_die()==1) {
                 die_count_begin = al_get_time();
                 al_play_sample_instance(dead_sound_spi);
             }
-
             //清空皇后
-            for(int i=0; i<8; i++){
-                for(int j=0; j<8; j++){
-                    board[i][j] = 0;
-                }
-            }
+            q.object_clear();
             queens_num++;
             counter = generator_speed; //counter重製
         }
@@ -172,19 +121,25 @@ int game_process(ALLEGRO_EVENT event,Player &player) {
 
     return MSG_NOPE;
 }
-
-void Player::heart_draw() {
+void Queen::object_clear() {
+    for(int i=0; i<8; i++){
+        for(int j=0; j<8; j++){
+            board[i][j] = 0;
+            }
+    }
+}
+void heart_draw(Player &player) {
     const int heart_size = 60;
-    if (HP >= 1)
+    if (player.HP_val() >= 1)
         al_draw_scaled_bitmap(heart, 0, 0, 22, 23, 50, 50, heart_size, heart_size, 0);
-    if (HP >= 2)
+    if (player.HP_val() >= 2)
         al_draw_scaled_bitmap(heart, 0,0 , 22, 23, 120, 50, heart_size, heart_size, 0);
-    if (HP >= 3)
+    if (player.HP_val() >= 3)
         al_draw_scaled_bitmap(heart, 0,0 , 22, 23, 190, 50, heart_size, heart_size, 0);
 }
 
-void Player::score_draw() {
-    if (HP > 0) {
+void score_draw(Player &player) {
+    if (player.HP_val() > 0) {
         number = al_get_time() - game_begin_time;
         if(!easter_egg_mode){
             number = (al_get_time() - game_begin_time)*3;
@@ -193,15 +148,7 @@ void Player::score_draw() {
 
     al_draw_textf(score, al_map_rgb(255,255,255), 400, 55, ALLEGRO_ALIGN_LEFT,  "Score: %3d", number);
 }
-
-void game_draw( Player &player) {
-    const float unit = 86;
-    const float dx = 33;
-    const float dy = 241;
-
-    al_draw_bitmap(GBI, 0, 0, 0); // 這個是背景buffer
-
-    // draw queens
+void queen_draw(){
     for (int i=0; i<8; ++i) {
         for (int j=0; j<8; ++j) {
             if(board[i][j] >=1 && board[i][j] < 20) {
@@ -261,8 +208,14 @@ void game_draw( Player &player) {
                     0
                 );
             }
-            //畫candy
-            if (board[i][j] < 0) {
+        }
+    }
+
+}
+void candy_draw(){
+    for (int i=0; i<8; ++i) {
+        for (int j=0; j<8; ++j) {
+                if (board[i][j] < 0) {
                 al_draw_scaled_bitmap(
                     algif_get_frame_bitmap(
                         candy_gif, gif_count / 6 % candy_gif->frames_count),
@@ -279,21 +232,25 @@ void game_draw( Player &player) {
             }
         }
     }
+}
+void player_draw(Player &player){
+    const float unit = 86;
+    const float dx = 33;
+    const float dy = 241;
 
-    // draw player
-    if (player.state_val() == PLAYER_IDLE) {
+    if (player.player_draw()==1) {
         al_draw_bitmap(
             algif_get_bitmap(JI_gif, al_get_time()),
             dx + player.x_val()*unit,
             dy + player.y_val()*unit,
             player.dir_val() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
-    } else if(player.state_val() == PLAYER_ROLL){
+    } else if(player.player_draw()==2){
         al_draw_bitmap(
             algif_get_bitmap(JJ_gif, player.frame_val()/21.0*0.84),
             dx + (player.x_val()*(player.frame_val()/21.0)+player.ox_val()*(1-player.frame_val()/21.0))*unit,
             dy + (player.y_val()*(player.frame_val()/21.0)+player.oy_val()*(1-player.frame_val()/21.0))*unit,
             player.dir_val() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
-    } else if(player.state_val() == PLAYER_DIE) {
+    } else if(player.player_draw()==3) {
         if (al_get_time() - die_count_begin <= 0.5){
             al_draw_bitmap(
                 algif_get_bitmap(JD_gif, al_get_time() - die_count_begin),
@@ -308,7 +265,18 @@ void game_draw( Player &player) {
                 player.dir_val() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
         }
     }
-    player.score_draw();
-    player.heart_draw();
+
+}
+void background_draw(){
+    al_draw_bitmap(GBI, 0, 0, 0);
+}
+void game_draw(Player &player) {
+    Queen q;
+    background_draw();
+    q.object_draw();
+    candy_draw();
+    player_draw(player);
+    score_draw(player);
+    heart_draw(player);
 
 }

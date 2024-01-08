@@ -15,16 +15,16 @@ float clamp(float v, float l, float u) {
     }
 }
 
-void setting_init() {
+void SETTING::State_init() {
     selected = 0;
     key_left_pressed = false;
     key_right_pressed = false;
-    
+
 }
 
 void setting_destroy() {}
 
-int setting_process(ALLEGRO_EVENT event) {
+int SETTING::State_process(ALLEGRO_EVENT event) {
 
     if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
         if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
@@ -51,7 +51,7 @@ int setting_process(ALLEGRO_EVENT event) {
         const float d_gain = 0.005f;
         if (selected == 0) {
             if (key_left_pressed || key_right_pressed) {
-                float new_gain = key_left_pressed ? (bgm_gain - d_gain) : (bgm_gain + d_gain); 
+                float new_gain = key_left_pressed ? (bgm_gain - d_gain) : (bgm_gain + d_gain);
                 new_gain = clamp(new_gain, 0.0f, 1.0f);
                 if (new_gain != bgm_gain) {
                     set_bgm_gain(new_gain);
@@ -59,7 +59,7 @@ int setting_process(ALLEGRO_EVENT event) {
             }
         } else {
             if (key_left_pressed || key_right_pressed) {
-                float new_gain = key_left_pressed ? (se_gain - d_gain) : (se_gain + d_gain); 
+                float new_gain = key_left_pressed ? (se_gain - d_gain) : (se_gain + d_gain);
                 new_gain = clamp(new_gain, 0.0f, 1.0f);
                 if (new_gain != se_gain) {
                     set_se_gain(new_gain);
@@ -71,7 +71,7 @@ int setting_process(ALLEGRO_EVENT event) {
     return MSG_NOPE;
 }
 
-void setting_draw() {
+void SETTING::Scene_draw() {
     al_clear_to_color(al_map_rgb(200, 200, 255));
 
     const float selector_offset_x = 25.0f;
@@ -90,7 +90,7 @@ void setting_draw() {
     al_draw_text(pirulen_36, black, padding, bgm_h, ALLEGRO_ALIGN_LEFT, "BGM");
     al_draw_text(pirulen_36, black, padding, bgm_h + scalar_offset_y, ALLEGRO_ALIGN_LEFT, "0");
     al_draw_text(pirulen_36, black, WIDTH - padding, bgm_h + scalar_offset_y, ALLEGRO_ALIGN_RIGHT, "100");
-    al_draw_line(bar_padding, bgm_h + bar_offset_y, WIDTH - bar_padding, bgm_h + bar_offset_y, black, bar_thickness); 
+    al_draw_line(bar_padding, bgm_h + bar_offset_y, WIDTH - bar_padding, bgm_h + bar_offset_y, black, bar_thickness);
     al_draw_filled_circle(bar_padding + (WIDTH - bar_padding * 2) * bgm_gain, bgm_h + bar_offset_y, circle_r + 4.0f, black);
     al_draw_filled_circle(bar_padding + (WIDTH - bar_padding * 2) * bgm_gain, bgm_h + bar_offset_y, circle_r, circle_color);
 
@@ -98,7 +98,7 @@ void setting_draw() {
     al_draw_text(pirulen_36, black, padding, se_h, ALLEGRO_ALIGN_LEFT, "SE");
     al_draw_text(pirulen_36, black, padding, se_h + scalar_offset_y, ALLEGRO_ALIGN_LEFT, "0");
     al_draw_text(pirulen_36, black, WIDTH - padding, se_h + scalar_offset_y, ALLEGRO_ALIGN_RIGHT, "100");
-    al_draw_line(bar_padding, se_h + bar_offset_y, WIDTH - bar_padding, se_h + bar_offset_y, black, bar_thickness); 
+    al_draw_line(bar_padding, se_h + bar_offset_y, WIDTH - bar_padding, se_h + bar_offset_y, black, bar_thickness);
     al_draw_filled_circle(bar_padding + (WIDTH - bar_padding * 2) * se_gain, se_h + bar_offset_y, circle_r + 4.0f, black);
     al_draw_filled_circle(bar_padding + (WIDTH - bar_padding * 2) * se_gain, se_h + bar_offset_y, circle_r, circle_color);
 

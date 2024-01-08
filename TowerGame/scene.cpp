@@ -5,7 +5,7 @@
 #include "resource.h"
 #include "setting.h"
 #include "about.h"
-
+#include "player.h"
 int scene_state;
 
 void scene_init() {
@@ -40,10 +40,34 @@ void scene_init() {
     load_resource();
     srand(time(NULL));
 }
+// class
+// input(int msg)
+// function:
+// 1. menu_destroy
+// 2. virtural 要 override 實作init
+// 3. 找到那個圖的某一個座標，可以藉由這個座標，去放箭頭
+// 4. virtural 要 override 實作擺放箭頭
+
+
+/*class GAME : public State{
+public:
+    virtual void State_init1(Player p) override{
+       game_init(p);
+    }
+
+    virtual void Scene_state() override {
+        scene_state = SCENE_GAME;
+    }
+    virtual void Scene_draw1(PLayer p) override{
+       game_draw(p);
+    }
+
+};*/
 
 void scene_begin() {
     scene_state = SCENE_MENU;
-    menu_init();
+    MENU ori;
+    ori.State_init();
     al_start_timer(scene_timer);
     al_play_sample_instance(eight_queens_bgm_spi);
 }
@@ -55,8 +79,10 @@ void scene_destroy() {
     destroy_resource();
 }
 
-int scene_run(Player &player) {
+int scene_run() {
     ALLEGRO_EVENT event;
+    Player player;
+
     al_wait_for_event(scene_queue, &event);
     // if the window was closed, then terminate the program
     if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE && event.display.source == scene_display) {
@@ -74,74 +100,22 @@ int scene_run(Player &player) {
 
 }
 
-// class
-// input(int msg)
-// function:
-// 1. menu_destroy
-// 2. virtural 要 override 實作init
-// 3. 找到那個圖的某一個座標，可以藉由這個座標，去放箭頭
-// 4. virtural 要 override 實作擺放箭頭
-
-class State{
-public:
-    void destructor(){
-        menu_destroy();
-    }
-
-    int site(){
-        if(msg_state == MSG_GAME_START) return 0;
-        else if(msg_state == MSG_CHANGE_SETTING) return 1;
-        else if(msg_state == MSG_TERMINATE) return 2;
-        else if(msg_state == MSG_ABOUT) return 3;
-    }
-
-    virtual void State_init(){};
-    virtual void Scene_state(){} ;
-
-
-private:
-    int msg_state;
-};
-
-
-
-class CHANGE_SETTING : public State{
-public:
-    virtual void State_init() override{
-        about_init();
-    }
-
-    virtual void Scene_state() override {
-        scene_state = SCENE_SETTING;
-    }
-};
-
-class ABOUT : public State{
-public:
-    virtual void State_init() override{
-        setting_init();
-    }
-
-    virtual void Scene_state() override {
-        scene_state = SCENE_ABOUT;
-    }
-};
-
 int scene_process(ALLEGRO_EVENT event,Player &player) {
     int msg;
 
     if (scene_state == SCENE_MENU) {
-        msg = menu_process(event);
+        MENU now_state;
+        msg = now_state.State_process(event);
         // printf("final\n");
         if (msg == MSG_GAME_START) {
              menu_destroy();
              scene_state = SCENE_GAME;
              game_init(player);
         } else if (msg == MSG_CHANGE_SETTING) {
-            CHANGE_SETTING now_state;
-            now_state.Scene_state();
+            SETTING now_state;
+            //now_state.Scene_state(SCENE_SETTING);
+            scene_state = SCENE_SETTING;
             now_state.State_init();
-
             // menu_destroy();
             // scene_state = SCENE_SETTING;
             // setting_init();
@@ -149,9 +123,9 @@ int scene_process(ALLEGRO_EVENT event,Player &player) {
             return MSG_TERMINATE;
         } else if (msg == MSG_ABOUT) {
             ABOUT now_state;
-            now_state.Scene_state();
+            //now_state.Scene_state(SCENE_ABOUT);
+            scene_state = SCENE_ABOUT;
             now_state.State_init();
-
             // menu_destroy();
             // scene_state = SCENE_ABOUT;
             // about_init();
@@ -159,36 +133,46 @@ int scene_process(ALLEGRO_EVENT event,Player &player) {
     } else if (scene_state == SCENE_GAME) {
         msg = game_process(event,player);
         if (msg == MSG_GAME_OVER) {
+            RESULT next_state;
             game_destroy();
+            //now_state.Scene_state(SCENE_RESULT);
             scene_state = SCENE_RESULT;
-            result_init();
+            next_state.State_init();
+            //scene_state = SCENE_RESULT;
+            //result_init();
         }
     } else if (scene_state == SCENE_RESULT) {
-        msg = result_process(event);
+        RESULT now_state;
+        msg = now_state.State_process(event);
         if (msg == MSG_GAME_RESTART) {
             result_destroy();
             scene_state = SCENE_GAME;
             game_init(player);
         } else if (msg == MSG_BACK_TO_MENU) {
+            MENU next_state;
             result_destroy();
             scene_state = SCENE_MENU;
-            menu_init();
+            next_state.State_init();
         } else if (msg == MSG_TERMINATE) {
             return MSG_TERMINATE;
         }
     } else if (scene_state == SCENE_SETTING) {
-        msg = setting_process(event);
+        SETTING now_state;
+        msg = now_state.State_process(event);
         if (msg == MSG_BACK_TO_MENU) {
+            MENU next_state;
             setting_destroy();
             scene_state = SCENE_MENU;
-            menu_init();
+            next_state.State_init();
         }
     } else if (scene_state == SCENE_ABOUT) {
-        msg = about_process(event);
+        ABOUT now_state;
+        msg = now_state.State_process(event);
         if (msg == MSG_BACK_TO_MENU) {
+            MENU next_state;
             about_destroy();
             scene_state = SCENE_MENU;
-            menu_init();
+            next_state.State_init();
         }
     }
     return MSG_NOPE;
@@ -197,16 +181,19 @@ int scene_process(ALLEGRO_EVENT event,Player &player) {
 void scene_draw( Player &player) {
     //printf("%d\n",player.x_val());
     if (scene_state == SCENE_MENU) {
-        menu_draw();
+        MENU now_state;
+        now_state.Scene_draw();
     } else if (scene_state == SCENE_GAME) {
-
         game_draw( player);
     } else if (scene_state == SCENE_RESULT) {
-        result_draw();
+        RESULT now_state;
+        now_state.Scene_draw();
     } else if (scene_state == SCENE_SETTING) {
-        setting_draw();
+        SETTING now_state;
+        now_state.Scene_draw();
     } else if (scene_state == SCENE_ABOUT) {
-        about_draw();
+        ABOUT now_state;
+        now_state.Scene_draw();
     }
     al_flip_display();
 }

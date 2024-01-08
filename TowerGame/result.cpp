@@ -3,11 +3,11 @@
 #include "game.h"
 
 int re_button_index = 0;
-void result_init() {}
+void RESULT::State_init() {}
 
 void result_destroy() {}
 
-int result_process(ALLEGRO_EVENT event) {
+int RESULT::State_process(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
         if(event.keyboard.keycode == ALLEGRO_KEY_DOWN){
             if(re_button_index <= 1){
@@ -38,7 +38,7 @@ int result_process(ALLEGRO_EVENT event) {
     return MSG_NOPE;
 }
 
-void result_draw() {
+void RESULT::Scene_draw() {
     // al_clear_to_color(al_map_rgb(255, 255, 200));
     // al_draw_text(pirulen_36, al_map_rgb(0, 0, 0), WIDTH/2, HEIGHT/2, ALLEGRO_ALIGN_CENTER, "This is result");
     if(re_button_index == 0){

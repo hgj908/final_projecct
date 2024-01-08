@@ -54,6 +54,8 @@
 		<Unit filename="global.h" />
 		<Unit filename="menu.cpp" />
 		<Unit filename="menu.h" />
+		<Unit filename="player.cpp" />
+		<Unit filename="player.h" />
 		<Unit filename="resource.cpp" />
 		<Unit filename="resource.h" />
 		<Unit filename="result.cpp" />

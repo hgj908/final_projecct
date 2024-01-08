@@ -46,3 +46,26 @@ void destroy_resource();
 
 void set_bgm_gain(float);
 void set_se_gain(float);
+class State{
+public:
+    void destructor(){
+       ;
+    }
+
+    /*int site(){
+        if(msg_state == MSG_GAME_START) return 0;
+        else if(msg_state == MSG_CHANGE_SETTING) return 1;
+        else if(msg_state == MSG_TERMINATE) return 2;
+        else if(msg_state == MSG_ABOUT) return 3;
+    }*/
+    virtual int State_process(ALLEGRO_EVENT){};
+    virtual void State_init(){};
+    //virtual void Scene_state(int){} ;
+    virtual void Scene_draw(){};
+    //virtual void State_init1(Player){};
+    //virtual void Scene_draw1(Player){};
+
+private:
+    int msg_state;
+    int scene_state;
+};

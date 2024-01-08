@@ -8,14 +8,14 @@ struct {
     bool pressed;
 } easter_egg;
 
-void menu_init() {
+void MENU::State_init() {
     easter_egg.angle = easter_egg_mode ? (ALLEGRO_PI / 2) : 0.0f;
     easter_egg.pressed = false;
 }
 
 void menu_destroy() {}
 
-int menu_process(ALLEGRO_EVENT event) {
+int MENU::State_process(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
         if(event.keyboard.keycode == ALLEGRO_KEY_DOWN){
             if(button_index <= 2){
@@ -73,7 +73,7 @@ int menu_process(ALLEGRO_EVENT event) {
     return MSG_NOPE;
 }
 
-void menu_draw() {
+void MENU::Scene_draw() {
 // void menu_draw(ALLEGRO_EVENT event) {
     // al_clear_to_color(al_map_rgb(200, 177, 177));
     // al_draw_text(pirulen_36, al_map_rgb(0, 0, 0), WIDTH/2, 450, ALLEGRO_ALIGN_CENTER, "This is menu");

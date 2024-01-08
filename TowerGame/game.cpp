@@ -7,7 +7,7 @@ double game_begin_time;
 float die_count_begin;
 int gif_count = 0;
 // by player
-int generator_speed = 180;//¥Í¦¨³t«×¡A180·©¨ê·s¤@ªi
+int generator_speed = 180;//ï¿½Í¦ï¿½ï¿½tï¿½×¡A180ï¿½ï¿½ï¿½ï¿½sï¿½@ï¿½i
 int counter;
 int queens_num;
 const float unit = 86;
@@ -20,12 +20,6 @@ void GAME::State_init(Player &cha) {
     j_idle_begin_time = al_get_time();
     game_begin_time = al_get_time();
     cha.player_init();
-    //cha.x_eval(0);
-    //cha.y_eval(0);
-    //cha.frame_eval(0);
-    //cha.state_eval(PLAYER_IDLE);
-    //cha.dir_eval(DIR_RIGHT);
-    //cha.HP_eval(3);
     counter = generator_speed;
     queens_num = 1;
 }
@@ -47,8 +41,8 @@ void Queen::object_process(int n) {
                     board[row][col]++;
                 }
             }
-        }//¥u­n¦³§ðÀ»¨ì´N+1
-        board[y][x]=100;//rand¤§«á§â¦³¬Ó¦ZªºÂIªº­È§ï¬°30
+        }//ï¿½uï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½N+1
+        board[y][x]=100;//randï¿½ï¿½ï¿½ï¿½â¦³ï¿½Ó¦Zï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½È§ï¬°30
     }
 }
 
@@ -66,27 +60,27 @@ int GAME::State_process(ALLEGRO_EVENT event,Player &player) {
         }
         return MSG_NOPE;
     }
-    // ´ú¸Õ¦å¶qÅã¥Ü
+    // ï¿½ï¿½ï¿½Õ¦ï¿½qï¿½ï¿½ï¿½
     if (event.type == ALLEGRO_EVENT_KEY_DOWN &&
         event.keyboard.keycode == ALLEGRO_KEY_Q &&
-        player.HP_val() > 0) {
-        player.HP_eval(player.HP_val()-1);
+        player.get_HP() > 0) {
+        player.set_HP(player.get_HP()-1);
     }
     player.player_getcandy();
     // player idle
-    if (event.type == ALLEGRO_EVENT_KEY_DOWN && player.state_val() == PLAYER_IDLE) {
-        player.ox_eval( player.x_val());
-        player.oy_eval( player.y_val());
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN && player.get_state() == PLAYER_IDLE) {
+        player.set_ox( player.get_x());
+        player.set_oy( player.get_y());
 
-        if ((event.keyboard.keycode == key_left || event.keyboard.keycode == ALLEGRO_KEY_A )&& player.x_val() > 0) {
-            player.x_eval(player.x_val()-1);
-        } else if ((event.keyboard.keycode == key_right || event.keyboard.keycode == ALLEGRO_KEY_D ) && player.x_val() < 7) {
-            player.x_eval(player.x_val()+1);
-        } else if ((event.keyboard.keycode == key_up || event.keyboard.keycode == ALLEGRO_KEY_W ) && player.y_val() > 0) {
-           player.y_eval(player.y_val()-1);
+        if ((event.keyboard.keycode == key_left || event.keyboard.keycode == ALLEGRO_KEY_A )&& player.get_x() > 0) {
+            player.set_x(player.get_x()-1);
+        } else if ((event.keyboard.keycode == key_right || event.keyboard.keycode == ALLEGRO_KEY_D ) && player.get_x() < 7) {
+            player.set_x(player.get_x()+1);
+        } else if ((event.keyboard.keycode == key_up || event.keyboard.keycode == ALLEGRO_KEY_W ) && player.get_y() > 0) {
+           player.set_y(player.get_y()-1);
             //printf("??");
-        } else if ((event.keyboard.keycode == key_down || event.keyboard.keycode == ALLEGRO_KEY_S ) && player.y_val() < 7) {
-            player.y_eval(player.y_val()+1);
+        } else if ((event.keyboard.keycode == key_down || event.keyboard.keycode == ALLEGRO_KEY_S ) && player.get_y() < 7) {
+            player.set_y(player.get_y()+1);
         }
         player.player_roll();
     }
@@ -98,8 +92,8 @@ int GAME::State_process(ALLEGRO_EVENT event,Player &player) {
         gif_count++;
         counter--;
         if (counter == 150) {
-            //¥Í¦¨¬Ó¦Z
-            //ÅÜ¼Æ¥i¥H½Õ¾ã¡A­nÀHµÛ®É¶¡½Õ¾ã¤]¦æ
+            //ï¿½Í¦ï¿½ï¿½Ó¦Z
+            //ï¿½Ü¼Æ¥iï¿½Hï¿½Õ¾ï¿½Aï¿½nï¿½Hï¿½Û®É¶ï¿½ï¿½Õ¾ï¿½]ï¿½ï¿½
             q.object_process(1 + queens_num / 8);
             //candy
             //if(number%5==0)
@@ -109,16 +103,16 @@ int GAME::State_process(ALLEGRO_EVENT event,Player &player) {
             al_stop_sample_instance(lightning_spi);
             al_play_sample_instance(lightning_spi);
         } else if (counter == 0) {
-            //§PÂ_¦©¦å
+            //ï¿½Pï¿½_ï¿½ï¿½ï¿½ï¿½
             player.player_hurt();
             if (player.player_go_die()==1) {
                 die_count_begin = al_get_time();
                 al_play_sample_instance(dead_sound_spi);
             }
-            //²MªÅ¬Ó¦Z
+            //ï¿½Mï¿½Å¬Ó¦Z
             q.object_clear();
             queens_num++;
-            counter = generator_speed; //counter­«»s
+            counter = generator_speed; //counterï¿½ï¿½ï¿½s
         }
     }
 
@@ -133,16 +127,16 @@ void Queen::object_clear() {
 }
 void heart_draw(Player &player) {
     const int heart_size = 60;
-    if (player.HP_val() >= 1)
+    if (player.get_HP() >= 1)
         al_draw_scaled_bitmap(heart, 0, 0, 22, 23, 50, 50, heart_size, heart_size, 0);
-    if (player.HP_val() >= 2)
+    if (player.get_HP() >= 2)
         al_draw_scaled_bitmap(heart, 0,0 , 22, 23, 120, 50, heart_size, heart_size, 0);
-    if (player.HP_val() >= 3)
+    if (player.get_HP() >= 3)
         al_draw_scaled_bitmap(heart, 0,0 , 22, 23, 190, 50, heart_size, heart_size, 0);
 }
 
 void score_draw(Player &player) {
-    if (player.HP_val() > 0) {
+    if (player.get_HP() > 0) {
         number = al_get_time() - game_begin_time;
         if(!easter_egg_mode){
             number = (al_get_time() - game_begin_time)*3;
@@ -246,28 +240,28 @@ void player_draw(Player &player){
     if (player.player_draw()==1) {
         al_draw_bitmap(
             algif_get_bitmap(JI_gif, al_get_time()),
-            dx + player.x_val()*unit,
-            dy + player.y_val()*unit,
-            player.dir_val() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
+            dx + player.get_x()*unit,
+            dy + player.get_y()*unit,
+            player.get_dir() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
     } else if(player.player_draw()==2){
         al_draw_bitmap(
-            algif_get_bitmap(JJ_gif, player.frame_val()/21.0*0.84),
-            dx + (player.x_val()*(player.frame_val()/21.0)+player.ox_val()*(1-player.frame_val()/21.0))*unit,
-            dy + (player.y_val()*(player.frame_val()/21.0)+player.oy_val()*(1-player.frame_val()/21.0))*unit,
-            player.dir_val() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
+            algif_get_bitmap(JJ_gif, player.get_frame()/21.0*0.84),
+            dx + (player.get_x()*(player.get_frame()/21.0)+player.get_ox()*(1-player.get_frame()/21.0))*unit,
+            dy + (player.get_y()*(player.get_frame()/21.0)+player.get_oy()*(1-player.get_frame()/21.0))*unit,
+            player.get_dir() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
     } else if(player.player_draw()==3) {
         if (al_get_time() - die_count_begin <= 0.5){
             al_draw_bitmap(
                 algif_get_bitmap(JD_gif, al_get_time() - die_count_begin),
-                dx + player.x_val()*unit,
-                dy + player.y_val()*unit,
-                player.dir_val() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
+                dx + player.get_x()*unit,
+                dy + player.get_y()*unit,
+                player.get_dir() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
         } else {
             al_draw_bitmap(
                 JD_stop,
-                dx + player.x_val()*unit,
-                dy + player.y_val()*unit,
-                player.dir_val() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
+                dx + player.get_x()*unit,
+                dy + player.get_y()*unit,
+                player.get_dir() == DIR_LEFT ? ALLEGRO_FLIP_HORIZONTAL : 0);
         }
     }
 
